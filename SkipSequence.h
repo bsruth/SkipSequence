@@ -1,13 +1,15 @@
 
 #include <array>
-template<typename IntType, int Start, int Skip, std::size_t... I>
-	constexpr std::array<IntType, sizeof...(I)> SkipSequence_impl(std::index_sequence<I...>&&)
-	{
-		return { (static_cast<IntType>(Skip*I + Start))... };
-	}
+//lets me have a compile time sequence with a custom starting value and increment
+//e.g. 
+template<typename IntType, IntType Start, IntType Skip, IntType... I>
+constexpr std::array<IntType, sizeof...(I)> SkipSequence_impl(std::index_sequence<I...>&&)
+{
+	return { (Skip * I + Start)... };
+}
 
-	template<typename IntType, int Start, int Skip, std::size_t Size, typename Indices = std::make_index_sequence<Size>>
-	struct SkipSequence
-	{
-		static constexpr std::array<IntType, Size> value = SkipSequenceWithStart_impl<IntType,Start, Skip>(Indices());
-	};
+template<typename IntType, IntType Start, IntType Skip, IntType Size, typename Indices = std::make_index_sequence<Size>>
+struct SkipSequence
+{
+	static constexpr std::array<IntType, Size> value = SkipSequence_impl<IntType, Start, Skip>(Indices());
+};
